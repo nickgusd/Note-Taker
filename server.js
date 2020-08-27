@@ -13,6 +13,12 @@ app.use(express.json());
 
 // The below points our server to a series of "route" files.
 // These routes give our server a "map" of how to respond when users visit or request data from various URLs.
-require("routes/apiroutes.js")(app);
-require("routes/htmlRoutes.js")(app);
+
+require("./routes/apiroutes")(app);
+require("./routes/htmlRoutes")(app);
+
+//listener
+app.listen(PORT, function() {
+    console.log("App listening on PORT: " + PORT);
+  });
 
