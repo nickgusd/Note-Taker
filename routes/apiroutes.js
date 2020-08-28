@@ -2,13 +2,10 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 // const notes = requires("db/db.json")
 
-let noteArray = [];
-
 module.exports = function(app) {
+  app.use(bodyParser())
 // API GET Requests
   // Below code handles when users "visit" a page.
-  app.use(bodyParser())
-
   app.get("/api/notes", function(req, res) {
    //   console.log(res)
    fs.readFile("db/db.json", function(error, data) {
@@ -19,11 +16,7 @@ module.exports = function(app) {
          var getNotes = JSON.parse(data);
          res.json(getNotes)
       }
-    
-      
    })
-   
-   
 
    // * GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
 
@@ -31,11 +24,7 @@ module.exports = function(app) {
 
  app.post("/api/notes", function(req, res) {
   var newNote = req.body;
-  // this id will be 1 // 
-//    //  var newnote = req.params.id
-//read from db file, then parse the array, push new note to parsed array, then stringify the array and write to db.json file instead of append. 
-  
-
+ 
    fs.readFile("db/db.json", function(error, data) {
       var dataparse = JSON.parse(data);
       newNote.id = dataparse.length + 1 
@@ -53,15 +42,6 @@ module.exports = function(app) {
 
    }
    )
-
-
-   // fs.appendFile("db/db.json", JSON.stringify(newNote), function(err) {
-   //    if (err) {
-   //       return console.log(err);
-   //     }
-   //     noteArray.push(newNote);
-   //    res.json(noteArray)
-   // })
 
  })
 
@@ -83,10 +63,8 @@ module.exports = function(app) {
       // console.log(parse[0].id)
       for (var i = 0; i < parse.length; i++) {
          if(parse[i].id == deleteNote) {
-            // data.splice("1",)
-            console.log("it works!")
-            // console.log(parse)
-            parse.splice(0,1)
+            console.log("it matches!")
+            parse.splice([i], 1)
             console.log(parse)
             fs.writeFile("db/db.json", JSON.stringify(parse), function(err) {
                if (err) {
@@ -95,24 +73,11 @@ module.exports = function(app) {
              
                res.json(parse);
             })
-           
          }
-
       }
-   
-    
      })
-
  })
-
  }
 
 
 
-// * The following API routes should be created:
-
-// * GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
-
-// * POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
-
-// * DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete. This means you'll need to find a way to give each note a unique `id` when it's saved. In order to delete a note, you'll need to read all notes from the `db.json` file, remove the note with the given `id` property, and then rewrite the notes to the `db.json` file.
