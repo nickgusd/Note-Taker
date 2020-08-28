@@ -39,9 +39,9 @@ module.exports = function(app) {
    fs.readFile("db/db.json", function(error, data) {
       var dataparse = JSON.parse(data);
       newNote.id = dataparse.length + 1 
-      console.log(dataparse)
+      // console.log(dataparse)
       dataparse.push(newNote);
-      console.log(dataparse)
+      // console.log(dataparse)
 
       fs.writeFile("db/db.json", JSON.stringify(dataparse), function(err) {
          if (err) {
@@ -78,21 +78,34 @@ module.exports = function(app) {
       if (error) {
          return console.log(error);
       }
-      // console.log(data)
-      // if (deleteNote === data) {
-      //    data = ["the"];
-      //    console.log(data)
-      //    console.log(deleteNote)
-      // }
-   // })
+      var parse = JSON.parse(data);
+      // console.log(parse[0])
+      // console.log(parse[0].id)
+      for (var i = 0; i < parse.length; i++) {
+         if(parse[i].id == deleteNote) {
+            // data.splice("1",)
+            console.log("it works!")
+            // console.log(parse)
+            parse.splice(0,1)
+            console.log(parse)
+            fs.writeFile("db/db.json", JSON.stringify(parse), function(err) {
+               if (err) {
+                  return console.log(err);
+                }
+             
+               res.json(parse);
+            })
+           
+         }
+
+      }
+   
+    
+     })
 
  })
 
  }
-
-
-
-
 
 
 
