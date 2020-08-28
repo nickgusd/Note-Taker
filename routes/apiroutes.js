@@ -1,34 +1,42 @@
 const fs = require("fs");
+const bodyParser = require("body-parser");
+
+let noteArray = [];
 
 module.exports = function(app) {
 // API GET Requests
   // Below code handles when users "visit" a page.
-
+  app.use(bodyParser())
 
   app.get("/api/notes", function(req, res) {
-   fs.readFile(__dirname + "/db/db.json", function(error, data) {
+   //   console.log(res)
+   fs.readFile("db/db.json", function(error, data) {
+      
       if (error) {
          return console.log(error);
+      } else {
+         var getNotes = JSON.parse(data);
+         res.json(getNotes)
       }
-      res.json(data)
+    
+      
    })
    
+   
+
    // * GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
 
   });
 
- app.post("/api/notes/:id", function(req, res) {
-   var newNote = req.body;
-   //  var newnote = req.params.id
-   fs.appendFile(__dirname + "/db/db.json", JSON.stringify(newNote), function(err) {
+ app.post("/api/notes", function(req, res) {
+  
+//    //  var newnote = req.params.id
+   fs.appendFile("db/db.json", JSON.stringify(req.body), function(err) {
       if (err) {
          return console.log(err);
        }
-       res.json(newNote)
+      res.json(noteArray.push(req.body))
    })
-
-    console.log(newnote);
-
 
  })
 
@@ -36,11 +44,25 @@ module.exports = function(app) {
 
 
 
- app.delete("/api/notes", function(req, res) {               
-    //need to create query parameter for note to be deleted
+ app.delete("/api/notes/:id", function(req, res) {               
+//     //need to create query parameter for note to be deleted
+     var deleteNote = req.params.id;
+
+     fs.readFile("db/db.json", "utf8", function(error, data) {
+      if (error) {
+         return console.log(error);
+      }
+      // console.log(data)
+      if (deleteNote === data) {
+         data = ["the"];
+         console.log(data)
+         console.log(deleteNote)
+      }
+   })
+
  })
 
-}
+ }
 
 
 
