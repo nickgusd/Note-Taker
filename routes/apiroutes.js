@@ -1,5 +1,6 @@
 const fs = require("fs");
 const bodyParser = require("body-parser");
+// const notes = requires("db/db.json")
 
 let noteArray = [];
 
@@ -29,36 +30,61 @@ module.exports = function(app) {
   });
 
  app.post("/api/notes", function(req, res) {
-  
+  var newNote = req.body;
+  // this id will be 1 // 
 //    //  var newnote = req.params.id
-   fs.appendFile("db/db.json", JSON.stringify(req.body), function(err) {
-      if (err) {
-         return console.log(err);
-       }
-      res.json(noteArray.push(req.body))
-   })
+//read from db file, then parse the array, push new note to parsed array, then stringify the array and write to db.json file instead of append. 
+  
+
+   fs.readFile("db/db.json", function(error, data) {
+      var dataparse = JSON.parse(data);
+      newNote.id = dataparse.length + 1 
+      console.log(dataparse)
+      dataparse.push(newNote);
+      console.log(dataparse)
+
+      fs.writeFile("db/db.json", JSON.stringify(dataparse), function(err) {
+         if (err) {
+            return console.log(err);
+          }
+       
+         res.json(dataparse);
+      })
+
+   }
+   )
+
+
+   // fs.appendFile("db/db.json", JSON.stringify(newNote), function(err) {
+   //    if (err) {
+   //       return console.log(err);
+   //     }
+   //     noteArray.push(newNote);
+   //    res.json(noteArray)
+   // })
 
  })
 
 //  * POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 
-
+//loop through array and splice it where the id matches the id in the array.
 
  app.delete("/api/notes/:id", function(req, res) {               
 //     //need to create query parameter for note to be deleted
      var deleteNote = req.params.id;
-
+     console.log(deleteNote)
+//splice array where note we are trying to delete is,
      fs.readFile("db/db.json", "utf8", function(error, data) {
       if (error) {
          return console.log(error);
       }
       // console.log(data)
-      if (deleteNote === data) {
-         data = ["the"];
-         console.log(data)
-         console.log(deleteNote)
-      }
-   })
+      // if (deleteNote === data) {
+      //    data = ["the"];
+      //    console.log(data)
+      //    console.log(deleteNote)
+      // }
+   // })
 
  })
 
