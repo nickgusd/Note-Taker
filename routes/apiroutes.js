@@ -1,4 +1,4 @@
-
+const fs = require("fs");
 
 module.exports = function(app) {
 // API GET Requests
@@ -6,13 +6,34 @@ module.exports = function(app) {
 
 
   app.get("/api/notes", function(req, res) {
-    // res.json(tableData);
+   fs.readFile(__dirname + "/db/db.json", function(error, data) {
+      if (error) {
+         return console.log(error);
+      }
+      res.json(data)
+   })
+   
+   // * GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
+
   });
 
- app.post("/api/notes", function(req, res) {
-    var newnote = req.body;
+ app.post("/api/notes/:id", function(req, res) {
+   var newNote = req.body;
+   //  var newnote = req.params.id
+   fs.appendFile(__dirname + "/db/db.json", JSON.stringify(newNote), function(err) {
+      if (err) {
+         return console.log(err);
+       }
+       res.json(newNote)
+   })
+
+    console.log(newnote);
+
 
  })
+
+//  * POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
+
 
 
  app.delete("/api/notes", function(req, res) {               
